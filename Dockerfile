@@ -1,28 +1,27 @@
 FROM ubuntu:16.04
 
-# Install needed packages
+# Common packages
 RUN apt-get update
-RUN apt-get install -y software-properties-common python-software-properties python-pip cmake
-RUN apt-get install -y m4 perl xz-utils
+RUN apt-get install -y software-properties-common
+RUN apt-get install -y build-essential
+RUN apt-get install -y zlib1g-dev
 
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test --yes
+RUN apt-get install -y llvm-5.0-dev llvm-5.0-dev libllvm5.0 llvm-5.0
+RUN apt-get install -y clang-5.0
 
-RUN apt-get update
-RUN apt-get install -y gcc-5 g++-5
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+# Boost 1.58
+RUN apt-get install -y libboost-all-dev
 
-RUN pip install --upgrade pip
-RUN pip install conan
+# Make clang the default compiler
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/clang-5.0 60 --slave /usr/bin/g++ g++ /usr/bin/clang++-5.0
 
-RUN conan user
+RUN update-alternatives --config gcc
 
-# Copy the conanfile.txt and ensure that all dependencies are built
-RUN mkdir /sparrow_deps
-COPY conanfile.txt /sparrow_deps/
-RUN mkdir /sparrow_deps/build
-WORKDIR /sparrow_deps/build
-RUN conan install .. --build=missing
+#install latest cmake
+ADD https://cmake.org/files/v3.10/cmake-3.10.1-Linux-x86_64.sh /cmake-3.10.1-Linux-x86_64.sh
+RUN sh /cmake-3.10.1-Linux-x86_64.sh --skip-license
+RUN rm -rf /cmake-3.10.1-Linux-x86_64.sh
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN rm -rf /sparrow_deps/*
+
