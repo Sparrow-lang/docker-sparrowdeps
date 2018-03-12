@@ -6,14 +6,14 @@ RUN apt-get install -y software-properties-common
 RUN apt-get install -y build-essential
 RUN apt-get install -y zlib1g-dev
 
-RUN apt-get install -y llvm-5.0-dev llvm-5.0-dev libllvm5.0 llvm-5.0
-RUN apt-get install -y clang-5.0
+RUN apt-get install -y llvm-6.0-dev llvm-6.0-dev libllvm6.0 llvm-6.0
+RUN apt-get install -y clang-6.0
 
 # Boost 1.58
 RUN apt-get install -y libboost-all-dev
 
 # Make clang the default compiler
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/clang-5.0 60 --slave /usr/bin/g++ g++ /usr/bin/clang++-5.0
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/clang-6.0 60 --slave /usr/bin/g++ g++ /usr/bin/clang++-6.0
 
 RUN update-alternatives --config gcc
 
